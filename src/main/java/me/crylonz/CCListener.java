@@ -96,6 +96,16 @@ public class CCListener implements Listener {
             e.setCancelled(true);
             Location playerTargetBlock = e.getPlayer().getTargetBlock(null, 0).getLocation().add(0, 1, 0);
             e.getPlayer().getWorld().spawnEntity(playerTargetBlock, EntityType.IRON_GOLEM);
+            ItemStack itemInMainHand = e.getPlayer().getInventory().getItemInMainHand();
+            ItemStack itemInOffHand = e.getPlayer().getInventory().getItemInOffHand();
+
+            if (itemInMainHand.isSimilar(e.getItem())) {
+                itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+            }
+
+            if (itemInOffHand.isSimilar(e.getItem())) {
+                itemInOffHand.setAmount(itemInOffHand.getAmount() - 1);
+            }
         }
     }
 
