@@ -1,6 +1,10 @@
 package me.crylonz;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.entity.Entity;
@@ -22,7 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.crylonz.CreatureCapture.*;
+import static me.crylonz.CreatureCapture.chanceToCapture;
+import static me.crylonz.CreatureCapture.isDisplay;
+import static me.crylonz.CreatureCapture.maxDurability;
+import static me.crylonz.CreatureCapture.players;
+import static me.crylonz.CreatureCapture.randVal;
+import static me.crylonz.CreatureCapture.spawnableMobEggs;
+import static me.crylonz.CreatureCapture.spawnersCanBeModifiedByEgg;
 
 public class CCListener implements Listener {
 
@@ -142,7 +152,8 @@ public class CCListener implements Listener {
                     if (player.hasPermission("creaturecapture.capture")) {
 
                         // if this mob is disable in option
-                        if (!plugin.getConfig().getBoolean(e.getEntity().getType().toString())) {
+                       Boolean allowed = spawnableMobEggs.get(e.getEntity().getType().toString());
+                        if (allowed == null || !allowed) {
                             return;
                         }
 
