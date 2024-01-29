@@ -6,9 +6,9 @@ description: Capture monster !
 api-version: "1.13"
 commands:
   cc:
-    description: give you the capture bow
-    usage: /cc
-    permission: creaturecapture.cc
+    description: is the base command for capture bow plugin.
+    usage: /cc <get|reload>
+    #permission: creaturecapture.cc
 
 permissions:
   creaturecapture.capture:
@@ -16,4 +16,10 @@ permissions:
     default: op
   creaturecapture.cc:
     description: Allows you to give you capture bow
+    default: op
+  creaturecapture.get:
+    description: Allows you to give you capture bow
+    default: op
+  creaturecapture.reload:
+    description: Allows you to reload settings.
     default: op

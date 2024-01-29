@@ -21,3 +21,12 @@
 /target/CreatureCapture-1.11.jar
 /target/CreatureCapture-1.12.jar
 /CreatureCapture.iml
+.idea/saveactions_settings.xml
+.idea/dictionaries
+.idea/misc.xml
+.idea/markdown.xml
+.idea/jarRepositories.xml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/compiler.xml
+.idea/checkstyle-idea.xml
+target/CreatureCapture-2.0.jar
