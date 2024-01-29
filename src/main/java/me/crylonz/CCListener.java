@@ -1,10 +1,6 @@
 package me.crylonz;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.entity.Entity;
@@ -26,13 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static me.crylonz.CreatureCapture.chanceToCapture;
-import static me.crylonz.CreatureCapture.isDisplay;
-import static me.crylonz.CreatureCapture.maxDurability;
-import static me.crylonz.CreatureCapture.players;
-import static me.crylonz.CreatureCapture.randVal;
-import static me.crylonz.CreatureCapture.spawnableMobEggs;
-import static me.crylonz.CreatureCapture.spawnersCanBeModifiedByEgg;
+import static me.crylonz.CreatureCapture.*;
 
 public class CCListener implements Listener {
 
@@ -66,20 +56,24 @@ public class CCListener implements Listener {
         if (e.getBow() != null && e.getBow().getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
             if (e.getEntity() instanceof Player) {
                 List<String> lores = Objects.requireNonNull(e.getBow().getItemMeta()).getLore();
-                int lifeRemaining = Integer.parseInt(
-                        ChatColor.stripColor(Objects.requireNonNull(lores).get(0)).split("/")[0]) - 1;
 
-                if (lifeRemaining == 0) {
-                    Player p = (Player) e.getEntity();
-                    p.getInventory().removeItem(p.getInventory().getItemInMainHand());
+                if (lores != null && lores.get(0).contains("/")) {
+                    int lifeRemaining = Integer.parseInt(
+                            ChatColor.stripColor(Objects.requireNonNull(lores).get(0)).split("/")[0]) - 1;
+
+                    if (lifeRemaining == 0) {
+                        Player p = (Player) e.getEntity();
+                        p.getInventory().removeItem(p.getInventory().getItemInMainHand());
+                    }
+
+                    List<String> newLores = new ArrayList<>();
+
+                    newLores.add(lifeRemaining + "/" + lores.get(0).split("/")[1]);
+
+                    ItemMeta meta = e.getBow().getItemMeta();
+                    meta.setLore(newLores);
+                    e.getBow().setItemMeta(meta);
                 }
-
-                List<String> newLores = new ArrayList<>();
-                newLores.add(lifeRemaining + "/" + lores.get(0).split("/")[1]);
-
-                ItemMeta meta = e.getBow().getItemMeta();
-                meta.setLore(newLores);
-                e.getBow().setItemMeta(meta);
 
                 players.add((Player) e.getEntity());
                 new CreatureCapture.Reminder(3);
@@ -109,12 +103,14 @@ public class CCListener implements Listener {
             ItemStack itemInMainHand = e.getPlayer().getInventory().getItemInMainHand();
             ItemStack itemInOffHand = e.getPlayer().getInventory().getItemInOffHand();
 
-            if (itemInMainHand.isSimilar(e.getItem())) {
-                itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
-            }
+            if (maxDurability != -1) {
+                if (itemInMainHand.isSimilar(e.getItem())) {
+                    itemInMainHand.setAmount(itemInMainHand.getAmount() - 1);
+                }
 
-            if (itemInOffHand.isSimilar(e.getItem())) {
-                itemInOffHand.setAmount(itemInOffHand.getAmount() - 1);
+                if (itemInOffHand.isSimilar(e.getItem())) {
+                    itemInOffHand.setAmount(itemInOffHand.getAmount() - 1);
+                }
             }
         }
     }
@@ -125,16 +121,7 @@ public class CCListener implements Listener {
         randVal = Math.random() * 100;
 
         if (e.getItem().getType() == Material.BOW && e.getExpLevelCost() == 30 && isDisplay) {
-
-            ItemStack item = e.getItem();
-            item.addUnsafeEnchantment(Enchantment.SILK_TOUCH, 1);
-            ItemMeta meta = item.getItemMeta();
-            Objects.requireNonNull(meta).setDisplayName(ChatColor.RED + (ChatColor.BOLD + "Capture Bow") + ChatColor.GOLD);
-            ArrayList<String> lore = new ArrayList<>();
-            lore.add(maxDurability + "/" + maxDurability);
-            meta.setLore(lore);
-            meta.setUnbreakable(true);
-            item.setItemMeta(meta);
+            generateCaptureBow(e.getItem());
             isDisplay = false;
         }
     }
@@ -151,8 +138,8 @@ public class CCListener implements Listener {
 
                     if (player.hasPermission("creaturecapture.capture")) {
 
-                        // if this mob is disable in option
-                       Boolean allowed = spawnableMobEggs.get(e.getEntity().getType().toString());
+                        // if this mob is disabled in option
+                        Boolean allowed = spawnableMobEggs.get(e.getEntity().getType().toString());
                         if (allowed == null || !allowed) {
                             return;
                         }

@@ -1,12 +1,12 @@
 name: CreatureCapture
 main: me.crylonz.CreatureCapture
-version: "2.0"
+version: "2.2.0"
 author: Crylonz
 description: Capture monster !
 api-version: "1.13"
 commands:
   cc:
-    description: is the base command for capture bow plugin.
+    description: is the base command for CreatureCapture plugin.
     usage: /cc <get|reload>
     #permission: creaturecapture.cc
 
@@ -15,7 +15,7 @@ permissions:
     description: Allows you to capture creature
     default: op
   creaturecapture.cc:
-    description: Allows you to give you capture bow
+    description: Allows you to use creature capture commands
     default: op
   creaturecapture.get:
     description: Allows you to give you capture bow
