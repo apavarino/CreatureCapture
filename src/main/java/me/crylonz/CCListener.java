@@ -141,7 +141,7 @@ public class CCListener implements Listener {
 
                     if (player.hasPermission("creaturecapture.capture")) {
 
-                        // if this mob is disable in option
+                        // if this mob is disabled in option
                         if (!plugin.getConfig().getBoolean(e.getEntity().getType().toString())) {
                             return;
                         }
@@ -158,7 +158,13 @@ public class CCListener implements Listener {
                                     if (Bukkit.getVersion().contains("1.12")) {
                                         egg = new ItemStack(Objects.requireNonNull(Material.getMaterial("MONSTER_EGG")), 1, e.getEntity().getType().getTypeId());
                                     } else {
-                                        egg = new ItemStack(Material.valueOf(e.getEntity().getType().name() + "_SPAWN_EGG"));
+                                        // issue of the API giving mushroom instead of mooshroom
+                                        if(e.getEntity().getType() == EntityType.MUSHROOM_COW) {
+                                            egg = new ItemStack(Material.valueOf( "MOOSHROOM_SPAWN_EGG"));
+                                        } else {
+                                            egg = new ItemStack(Material.valueOf(e.getEntity().getType().name() + "_SPAWN_EGG"));
+
+                                        }
                                     }
 
                                     player.getWorld().dropItem(e.getEntity().getLocation(), egg);
@@ -167,6 +173,7 @@ public class CCListener implements Listener {
                                     players.remove(player);
 
                                 } catch (IllegalArgumentException ignored) {
+                                    plugin.getLogger().severe(ignored.getMessage());
                                     if (e.getEntity().getType() == EntityType.IRON_GOLEM) {
                                         ItemStack golemEgg = new ItemStack(Material.POLAR_BEAR_SPAWN_EGG, 1);
                                         ItemMeta meta = golemEgg.getItemMeta();
